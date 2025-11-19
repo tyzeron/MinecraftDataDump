@@ -25,6 +25,10 @@ unimined.minecraft(sourceSets.main, true) {
 
 dependencies {
     implementation(project(":common"))
+
+    // These are provided by Minecraft at runtime but needed for test compilation
+    testCompileOnly 'com.google.code.gson:gson:2.13.1'
+    testCompileOnly 'org.slf4j:slf4j-api:2.0.17'
 }
 
 processResources {
