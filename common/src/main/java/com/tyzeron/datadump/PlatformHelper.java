@@ -1,6 +1,7 @@
 package com.tyzeron.datadump;
 
 import com.tyzeron.datadump.abstraction.block.BlockDataProvider;
+import com.tyzeron.datadump.abstraction.nbt.NbtWriter;
 
 import java.nio.file.Path;
 
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 public class PlatformHelper {
 
     private static BlockDataProvider blockDataProvider;
+    private static NbtWriter nbtWriter;
     private static Path gameDirectory;
     private static Path configDirectory;
 
@@ -24,6 +26,17 @@ public class PlatformHelper {
             throw new IllegalStateException("BlockDataProvider not initialized! Make sure the loader-specific code sets it.");
         }
         return blockDataProvider;
+    }
+
+    public static void setNbtWriter(NbtWriter writer) {
+        nbtWriter = writer;
+    }
+
+    public static NbtWriter getNbtWriter() {
+        if (nbtWriter == null) {
+            throw new IllegalStateException("NbtWriter not initialized! Make sure the loader-specific code sets it.");
+        }
+        return nbtWriter;
     }
 
     public static void setGameDirectory(Path directory) {
