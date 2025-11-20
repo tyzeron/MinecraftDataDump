@@ -1,14 +1,30 @@
 package com.tyzeron.datadump.command;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import com.tyzeron.datadump.BlockDataDump;
 import com.tyzeron.datadump.DataDump;
 import com.tyzeron.datadump.PlatformHelper;
 import com.tyzeron.datadump.RegistryDataDump;
+import com.tyzeron.datadump.abstraction.block.BlockDataProvider;
+import com.tyzeron.datadump.abstraction.block.BlockInfo;
+import com.tyzeron.datadump.abstraction.nbt.NbtCompound;
+import com.tyzeron.datadump.abstraction.nbt.NbtWriter;
+import com.tyzeron.datadump.abstraction.registry.RegistryDataProvider;
+import com.tyzeron.datadump.abstraction.registry.RegistryInfo;
+import com.tyzeron.datadump.builder.DataStructureBuilder;
+import com.tyzeron.datadump.builder.JsonDataBuilder;
+import com.tyzeron.datadump.builder.NbtDataBuilder;
 import com.tyzeron.datadump.config.ConfigManager;
 import com.tyzeron.datadump.config.ProfileConfig;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -70,8 +86,16 @@ public class CommandHandler {
             }
             File outputFile = new File(outputDir.toFile(), filename);
 
-            DataDump.LOGGER.info("Running data dump -> {}", outputFile.getAbsolutePath());
-            BlockDataDump.generateDump(outputFile, profile);
+            // Create parent directory if needed
+            File parentDir = outputFile.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            DataDump.LOGGER.info("Running combined data dump -> {}", outputFile.getAbsolutePath());
+
+            // Generate combined dump with all enabled data sources
+            generateCombinedDump(outputFile, profile);
 
             return CommandResult.success(String.format(
                 "Data dump completed successfully! File saved to: %s",
@@ -162,6 +186,99 @@ public class CommandHandler {
             DataDump.LOGGER.error("Failed to run multi-file dump", e);
             return CommandResult.error("Failed to run dump: " + e.getMessage());
         }
+    }
+
+    /**
+     * Generates a combined dump with all enabled data sources
+     */
+    private static void generateCombinedDump(File outputFile, ProfileConfig profile) throws IOException {
+        String format = profile.getExport().getFormat().toLowerCase();
+
+        // Check if format is binary and reject it
+        if ("binary".equals(format)) {
+            throw new IOException("Binary format is not implemented yet");
+        }
+
+        if ("json".equals(format)) {
+            generateCombinedJsonDump(outputFile, profile);
+        } else if ("nbt".equals(format)) {
+            generateCombinedNbtDump(outputFile, profile);
+        } else {
+            throw new IOException("Unknown format: " + format);
+        }
+    }
+
+    /**
+     * Generates a combined JSON dump
+     */
+    private static void generateCombinedJsonDump(File outputFile, ProfileConfig profile) throws IOException {
+        JsonDataBuilder builder = new JsonDataBuilder();
+        JsonObject root = (JsonObject) builder.createObject();
+
+        // Add blocks data if enabled
+        if (profile.getBlocks() != null) {
+            BlockDataProvider blockProvider = PlatformHelper.getBlockDataProvider();
+            Collection<BlockInfo> blocks = blockProvider.getAllBlocks();
+            
+            DataDump.LOGGER.info("Building blocks data for combined dump...");
+            Object blocksData = BlockDataDump.buildBlockData(blocks, profile, builder);
+            builder.addToObject(root, "blocks", blocksData);
+        }
+
+        // Add registries data if enabled
+        if (profile.getRegistries() != null) {
+            RegistryDataProvider registryProvider = PlatformHelper.getRegistryDataProvider();
+            Collection<RegistryInfo> registries = registryProvider.getAllRegistries();
+            
+            DataDump.LOGGER.info("Building registries data for combined dump...");
+            Object registriesData = RegistryDataDump.buildRegistryData(registries, profile, builder);
+            builder.addToObject(root, "registries", registriesData);
+        }
+
+        // Choose GSON instance based on format
+        boolean pretty = profile.getExport().getJson() != null && profile.getExport().getJson().isPretty();
+        Gson gson = pretty ? new GsonBuilder().setPrettyPrinting().create() : new Gson();
+
+        try (FileWriter writer = new FileWriter(outputFile)) {
+            gson.toJson(root, writer);
+        }
+        DataDump.LOGGER.info("Successfully dumped combined data to: {}", outputFile.getAbsolutePath());
+    }
+
+    /**
+     * Generates a combined NBT dump
+     */
+    private static void generateCombinedNbtDump(File outputFile, ProfileConfig profile) throws IOException {
+        NbtWriter nbtWriter = PlatformHelper.getNbtWriter();
+        NbtCompound root = nbtWriter.createCompound();
+        NbtDataBuilder builder = new NbtDataBuilder(root);
+
+        // Add blocks data if enabled
+        if (profile.getBlocks() != null) {
+            BlockDataProvider blockProvider = PlatformHelper.getBlockDataProvider();
+            Collection<BlockInfo> blocks = blockProvider.getAllBlocks();
+            
+            DataDump.LOGGER.info("Building blocks data for combined dump...");
+            Object blocksData = BlockDataDump.buildBlockData(blocks, profile, builder);
+            builder.addToObject(root, "blocks", blocksData);
+        }
+
+        // Add registries data if enabled
+        if (profile.getRegistries() != null) {
+            RegistryDataProvider registryProvider = PlatformHelper.getRegistryDataProvider();
+            Collection<RegistryInfo> registries = registryProvider.getAllRegistries();
+            
+            DataDump.LOGGER.info("Building registries data for combined dump...");
+            Object registriesData = RegistryDataDump.buildRegistryData(registries, profile, builder);
+            builder.addToObject(root, "registries", registriesData);
+        }
+
+        // Write NBT to file
+        boolean compressed = profile.getExport().getNbt() != null && profile.getExport().getNbt().isCompressed();
+        nbtWriter.writeNbt(root, outputFile, compressed);
+
+        DataDump.LOGGER.info("Successfully dumped combined data to: {} (NBT, compressed: {})", 
+            outputFile.getAbsolutePath(), compressed);
     }
 
     /**

@@ -61,7 +61,7 @@ public class BlockDataDump {
     /**
      * Common method to build block data structure using any builder implementation
      */
-    private static Object buildBlockData(Collection<BlockInfo> blocks, ProfileConfig profile, DataStructureBuilder builder) {
+    public static Object buildBlockData(Collection<BlockInfo> blocks, ProfileConfig profile, DataStructureBuilder builder) {
         Object root = builder.createObject();
         Map<String, Object> sortedBlocks = new TreeMap<>();
 

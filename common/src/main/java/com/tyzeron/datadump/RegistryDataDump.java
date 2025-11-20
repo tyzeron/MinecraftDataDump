@@ -41,9 +41,7 @@ public class RegistryDataDump {
 
         // Get platform-specific registry data provider
         RegistryDataProvider provider = PlatformHelper.getRegistryDataProvider();
-        DataDump.LOGGER.info("Fetching registries from provider...");
         Collection<RegistryInfo> registries = provider.getAllRegistries();
-        DataDump.LOGGER.info("Retrieved {} registries", registries.size());
 
         if (registries.isEmpty()) {
             DataDump.LOGGER.warn("No registries found! Check if server is initialized.");
@@ -67,15 +65,9 @@ public class RegistryDataDump {
     /**
      * Common method to build registry data structure using any builder implementation
      */
-    private static Object buildRegistryData(Collection<RegistryInfo> registries, ProfileConfig profile, DataStructureBuilder builder) {
+    public static Object buildRegistryData(Collection<RegistryInfo> registries, ProfileConfig profile, DataStructureBuilder builder) {
         Object root = builder.createObject();
-
         boolean includeCodec = profile.getRegistries() != null && profile.getRegistries().isCodec();
-        DataDump.LOGGER.info("Building registry data, codec enabled: {}", includeCodec);
-
-        int totalEntries = 0;
-        int entriesWithCodec = 0;
-        int registryCount = 0;
 
         // Sort registries by identifier for consistent output
         List<RegistryInfo> sortedRegistries = new ArrayList<>(registries);
@@ -106,23 +98,17 @@ public class RegistryDataDump {
                     if (encodedData != null && !encodedData.isEmpty()) {
                         Object elementObject = buildNestedData(encodedData, builder);
                         builder.addToObject(entryObject, "element", elementObject);
-                        entriesWithCodec++;
                     }
                 }
 
                 builder.addToArray(entriesArray, entryObject);
-                totalEntries++;
             }
 
             builder.addToObject(registryData, "value", entriesArray);
 
             // Add this registry directly to root (no intermediate storage)
             builder.addToObject(root, registryInfo.getRegistryIdentifier(), registryData);
-            registryCount++;
         }
-
-        DataDump.LOGGER.info("Built {} registries with {} total entries ({} with codec data)", 
-            registryCount, totalEntries, entriesWithCodec);
 
         return root;
     }
