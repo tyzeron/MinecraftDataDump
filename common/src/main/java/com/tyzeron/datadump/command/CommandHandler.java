@@ -3,6 +3,7 @@ package com.tyzeron.datadump.command;
 import com.tyzeron.datadump.BlockDataDump;
 import com.tyzeron.datadump.DataDump;
 import com.tyzeron.datadump.PlatformHelper;
+import com.tyzeron.datadump.RegistryDataDump;
 import com.tyzeron.datadump.config.ConfigManager;
 import com.tyzeron.datadump.config.ProfileConfig;
 
@@ -98,12 +99,6 @@ public class CommandHandler {
                     ProfileConfig.MultiOutputConfig outputConfig = entry.getValue();
 
                     try {
-                        // Skip non-blocks categories for now
-                        if (!"blocks".equals(category)) {
-                            DataDump.LOGGER.info("Skipping '{}' dump (not implemented yet)", category);
-                            continue;
-                        }
-
                         String format = outputConfig.getFormat();
                         String filename = outputConfig.getFile();
                         if (!filename.contains(".")) {
@@ -127,11 +122,21 @@ public class CommandHandler {
                         exportConfig.setNbt(profile.getExport().getNbt());
 
                         tempProfile.setExport(exportConfig);
-                        tempProfile.setBlocks(profile.getBlocks());
 
                         DataDump.LOGGER.info("Running {} dump -> {}", category, outputFile.getAbsolutePath());
-                        BlockDataDump.generateDump(outputFile, tempProfile);
-                        successCount++;
+
+                        // Route to the appropriate dump handler based on category
+                        if ("blocks".equals(category)) {
+                            tempProfile.setBlocks(profile.getBlocks());
+                            BlockDataDump.generateDump(outputFile, tempProfile);
+                            successCount++;
+                        } else if ("registries".equals(category)) {
+                            tempProfile.setRegistries(profile.getRegistries());
+                            RegistryDataDump.generateDump(outputFile, tempProfile);
+                            successCount++;
+                        } else {
+                            DataDump.LOGGER.warn("Unknown category '{}', skipping", category);
+                        }
                     } catch (Exception e) {
                         DataDump.LOGGER.error("Failed to dump category: {}", category, e);
                         failCount++;

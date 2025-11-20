@@ -16,6 +16,7 @@ public class FabricDataDump implements ModInitializer {
     public void onInitialize() {
         // Initialize platform-specific components
         PlatformHelper.setBlockDataProvider(new FabricBlockDataProvider());
+        PlatformHelper.setRegistryDataProvider(new FabricRegistryDataProvider());
         PlatformHelper.setNbtWriter(new FabricNbtWriter());
         PlatformHelper.setGameDirectory(FabricLoader.getInstance().getGameDir());
         PlatformHelper.setConfigDirectory(FabricLoader.getInstance().getConfigDir());
@@ -46,6 +47,8 @@ public class FabricDataDump implements ModInitializer {
                         })
                         .executes(context -> {
                             String profileName = StringArgumentType.getString(context, "profile");
+                            var registryProvider = (FabricRegistryDataProvider) PlatformHelper.getRegistryDataProvider();
+                            registryProvider.setServer(context.getSource().getServer());
                             var result = CommandHandler.handleRun(profileName);
                             if (result.isSuccess()) {
                                 context.getSource().sendSuccess(() -> 
