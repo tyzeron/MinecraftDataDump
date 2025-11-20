@@ -23,6 +23,9 @@ dependencies {
     annotationProcessor(manifold.module("strings"))
     testAnnotationProcessor(manifold.module("preprocessor"))
     testAnnotationProcessor(manifold.module("strings"))
+
+    // TOML parsing library (needed by common project)
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
 }
 
 processResources {

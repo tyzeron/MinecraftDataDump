@@ -1,0 +1,29 @@
+# Minecraft Data Dump Configuration
+
+[export]
+format = ""  # json | nbt | binary
+single_file = false
+filename = ""
+
+[export.json]
+pretty = true
+
+[export.nbt]
+compressed = true
+
+# Multi-file outputs (when single_file = false)
+[multi_output.blocks]
+file = "blocks_dump"
+format = "json"
+
+[multi_output.registries]
+file = "registries_dump"
+format = "nbt"
+
+# Data options
+[blocks]
+properties = true
+states = true
+
+[registries]
+codec = true
