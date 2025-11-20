@@ -10,6 +10,7 @@ import com.tyzeron.datadump.abstraction.nbt.NbtList;
 public class NbtDataBuilder implements DataStructureBuilder {
 
     private final NbtCompound rootCompound;
+    private boolean isFirstObjectCreation = true;
 
     public NbtDataBuilder(NbtCompound rootCompound) {
         this.rootCompound = rootCompound;
@@ -17,6 +18,12 @@ public class NbtDataBuilder implements DataStructureBuilder {
 
     @Override
     public Object createObject() {
+        // The first time createObject is called, return the root compound
+        // Subsequent calls create new nested compounds
+        if (isFirstObjectCreation) {
+            isFirstObjectCreation = false;
+            return rootCompound;
+        }
         return rootCompound.createCompound();
     }
 

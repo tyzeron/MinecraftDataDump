@@ -2,6 +2,7 @@ package com.tyzeron.datadump;
 
 import com.tyzeron.datadump.abstraction.block.BlockDataProvider;
 import com.tyzeron.datadump.abstraction.nbt.NbtWriter;
+import com.tyzeron.datadump.abstraction.registry.RegistryDataProvider;
 
 import java.nio.file.Path;
 
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 public class PlatformHelper {
 
     private static BlockDataProvider blockDataProvider;
+    private static RegistryDataProvider registryDataProvider;
     private static NbtWriter nbtWriter;
     private static Path gameDirectory;
     private static Path configDirectory;
@@ -26,6 +28,17 @@ public class PlatformHelper {
             throw new IllegalStateException("BlockDataProvider not initialized! Make sure the loader-specific code sets it.");
         }
         return blockDataProvider;
+    }
+
+    public static void setRegistryDataProvider(RegistryDataProvider provider) {
+        registryDataProvider = provider;
+    }
+
+    public static RegistryDataProvider getRegistryDataProvider() {
+        if (registryDataProvider == null) {
+            throw new IllegalStateException("RegistryDataProvider not initialized! Make sure the loader-specific code sets it.");
+        }
+        return registryDataProvider;
     }
 
     public static void setNbtWriter(NbtWriter writer) {

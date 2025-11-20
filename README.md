@@ -123,7 +123,7 @@ all Minecraft-specific functionality, creating a clean separation between the mo
 implementations. This approach enhances portability across different mod loaders and Minecraft versions, while also 
 making the codebase more maintainable and testable.
 
-# Contact
+## Contact
 
 I am primarily active on Discord, but my **DMs are closed**. The most effective way to get in touch with me is via a 
 Discord Server **support ticket**.
