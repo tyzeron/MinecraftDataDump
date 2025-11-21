@@ -150,8 +150,16 @@ public class RegistryDataDump {
         switch (value) {
             case null -> builder.addStringProperty(parent, key, "null");
             case String s -> builder.addStringProperty(parent, key, s);
-            case Integer i -> builder.addIntProperty(parent, key, i);
             case Boolean b -> builder.addBooleanProperty(parent, key, b);
+            case Byte b -> builder.addByteProperty(parent, key, b);
+            case Short s -> builder.addShortProperty(parent, key, s);
+            case Integer i -> builder.addIntProperty(parent, key, i);
+            case Long l -> builder.addLongProperty(parent, key, l);
+            case Float f -> builder.addFloatProperty(parent, key, f);
+            case Double d -> builder.addDoubleProperty(parent, key, d);
+            case byte[] ba -> builder.addByteArrayProperty(parent, key, ba);
+            case int[] ia -> builder.addIntArrayProperty(parent, key, ia);
+            case long[] la -> builder.addLongArrayProperty(parent, key, la);
             case Map map -> {
                 Object nestedObj = buildNestedData(value, builder);
                 builder.addToObject(parent, key, nestedObj);
@@ -160,18 +168,9 @@ public class RegistryDataDump {
                 Object nestedArray = buildNestedData(value, builder);
                 builder.addToObject(parent, key, nestedArray);
             }
-            case Long l ->
-                // Handle long as int (may lose precision but keeps as number)
-                    builder.addIntProperty(parent, key, l.intValue());
-            case Byte b -> builder.addIntProperty(parent, key, b.intValue());
-            case Short i -> builder.addIntProperty(parent, key, i.intValue());
-            case Float v ->
-                // For floating point, convert to string to preserve precision
-                    builder.addStringProperty(parent, key, value.toString());
-            case Double aDouble -> builder.addStringProperty(parent, key, value.toString());
             case Number number ->
-                // Handle any other number types
-                    builder.addIntProperty(parent, key, number.intValue());
+                // Handle any other number types as double
+                    builder.addDoubleProperty(parent, key, number.doubleValue());
             default ->
                 // For any other type, convert to string
                     builder.addStringProperty(parent, key, value.toString());
@@ -182,16 +181,32 @@ public class RegistryDataDump {
      * Adds a value to an array, handling different types appropriately
      */
     private static void addValueToArray(Object array, Object value, DataStructureBuilder builder) {
-        if (value == null) {
-            builder.addStringToArray(array, "null");
-        } else if (value instanceof String) {
-            builder.addStringToArray(array, (String) value);
-        } else if (value instanceof Map || value instanceof Collection) {
-            Object nestedValue = buildNestedData(value, builder);
-            builder.addToArray(array, nestedValue);
-        } else {
-            // For primitives in arrays, convert to string
-            builder.addStringToArray(array, value.toString());
+        switch (value) {
+            case null -> builder.addStringToArray(array, "null");
+            case String s -> builder.addStringToArray(array, s);
+            case Byte b -> builder.addByteToArray(array, b);
+            case Short s -> builder.addShortToArray(array, s);
+            case Integer i -> builder.addIntToArray(array, i);
+            case Long l -> builder.addLongToArray(array, l);
+            case Float f -> builder.addFloatToArray(array, f);
+            case Double d -> builder.addDoubleToArray(array, d);
+            case byte[] ba -> builder.addByteArrayToArray(array, ba);
+            case int[] ia -> builder.addIntArrayToArray(array, ia);
+            case long[] la -> builder.addLongArrayToArray(array, la);
+            case Map map -> {
+                Object nestedValue = buildNestedData(value, builder);
+                builder.addToArray(array, nestedValue);
+            }
+            case Collection collection -> {
+                Object nestedValue = buildNestedData(value, builder);
+                builder.addToArray(array, nestedValue);
+            }
+            case Number number ->
+                // Handle any other number types as double
+                    builder.addDoubleToArray(array, number.doubleValue());
+            default ->
+                // For any other type, convert to string
+                    builder.addStringToArray(array, value.toString());
         }
     }
 

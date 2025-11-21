@@ -47,13 +47,21 @@ public class NbtDataBuilder implements DataStructureBuilder {
         NbtList list = (NbtList) array;
         if (value instanceof NbtCompound) {
             list.addCompound((NbtCompound) value);
+        } else if (value instanceof NbtList) {
+            list.addList((NbtList) value);
         }
     }
 
     @Override
-    public void addStringProperty(Object parent, String key, String value) {
+    public void addByteProperty(Object parent, String key, byte value) {
         NbtCompound compound = (NbtCompound) parent;
-        compound.putString(key, value);
+        compound.putByte(key, value);
+    }
+
+    @Override
+    public void addShortProperty(Object parent, String key, short value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putShort(key, value);
     }
 
     @Override
@@ -63,15 +71,111 @@ public class NbtDataBuilder implements DataStructureBuilder {
     }
 
     @Override
+    public void addLongProperty(Object parent, String key, long value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putLong(key, value);
+    }
+
+    @Override
+    public void addFloatProperty(Object parent, String key, float value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putFloat(key, value);
+    }
+
+    @Override
+    public void addDoubleProperty(Object parent, String key, double value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putDouble(key, value);
+    }
+
+    @Override
+    public void addStringProperty(Object parent, String key, String value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putString(key, value);
+    }
+
+    @Override
+    public void addByteArrayProperty(Object parent, String key, byte[] value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putByteArray(key, value);
+    }
+
+    @Override
+    public void addIntArrayProperty(Object parent, String key, int[] value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putIntArray(key, value);
+    }
+
+    @Override
+    public void addLongArrayProperty(Object parent, String key, long[] value) {
+        NbtCompound compound = (NbtCompound) parent;
+        compound.putLongArray(key, value);
+    }
+
+    @Override
     public void addBooleanProperty(Object parent, String key, boolean value) {
         NbtCompound compound = (NbtCompound) parent;
         compound.putBoolean(key, value);
     }
 
     @Override
+    public void addByteToArray(Object array, byte value) {
+        NbtList list = (NbtList) array;
+        list.addByte(value);
+    }
+
+    @Override
+    public void addShortToArray(Object array, short value) {
+        NbtList list = (NbtList) array;
+        list.addShort(value);
+    }
+
+    @Override
+    public void addIntToArray(Object array, int value) {
+        NbtList list = (NbtList) array;
+        list.addInt(value);
+    }
+
+    @Override
+    public void addLongToArray(Object array, long value) {
+        NbtList list = (NbtList) array;
+        list.addLong(value);
+    }
+
+    @Override
+    public void addFloatToArray(Object array, float value) {
+        NbtList list = (NbtList) array;
+        list.addFloat(value);
+    }
+
+    @Override
+    public void addDoubleToArray(Object array, double value) {
+        NbtList list = (NbtList) array;
+        list.addDouble(value);
+    }
+
+    @Override
     public void addStringToArray(Object array, String value) {
         NbtList list = (NbtList) array;
         list.addString(value);
+    }
+
+    @Override
+    public void addByteArrayToArray(Object array, byte[] value) {
+        NbtList list = (NbtList) array;
+        list.addByteArray(value);
+    }
+
+    @Override
+    public void addIntArrayToArray(Object array, int[] value) {
+        NbtList list = (NbtList) array;
+        list.addIntArray(value);
+    }
+
+    @Override
+    public void addLongArrayToArray(Object array, long[] value) {
+        NbtList list = (NbtList) array;
+        list.addLongArray(value);
     }
 
 }

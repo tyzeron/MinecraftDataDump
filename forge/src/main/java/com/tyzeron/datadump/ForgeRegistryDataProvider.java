@@ -183,6 +183,21 @@ public class ForgeRegistryDataProvider implements RegistryDataProvider {
         }
 
         @Override
+        protected boolean isByteArray(Tag tag) {
+            return tag instanceof net.minecraft.nbt.ByteArrayTag;
+        }
+
+        @Override
+        protected boolean isIntArray(Tag tag) {
+            return tag instanceof net.minecraft.nbt.IntArrayTag;
+        }
+
+        @Override
+        protected boolean isLongArray(Tag tag) {
+            return tag instanceof net.minecraft.nbt.LongArrayTag;
+        }
+
+        @Override
         protected Iterable<String> getCompoundKeys(Tag compound) {
             return ((net.minecraft.nbt.CompoundTag) compound).getAllKeys();
         }
@@ -225,6 +240,21 @@ public class ForgeRegistryDataProvider implements RegistryDataProvider {
         @Override
         protected short getAsShort(Tag tag) {
             return ((net.minecraft.nbt.ShortTag) tag).getAsShort();
+        }
+
+        @Override
+        protected byte[] getAsByteArray(Tag tag) {
+            return ((net.minecraft.nbt.ByteArrayTag) tag).getAsByteArray();
+        }
+
+        @Override
+        protected int[] getAsIntArray(Tag tag) {
+            return ((net.minecraft.nbt.IntArrayTag) tag).getAsIntArray();
+        }
+
+        @Override
+        protected long[] getAsLongArray(Tag tag) {
+            return ((net.minecraft.nbt.LongArrayTag) tag).getAsLongArray();
         }
 
         @Override

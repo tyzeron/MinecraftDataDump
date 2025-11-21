@@ -34,6 +34,12 @@ public abstract class NbtConverter<T> {
             return convertCompoundToMap(tag);
         } else if (isList(tag)) {
             return convertListToList(tag);
+        } else if (isByteArray(tag)) {
+            return getAsByteArray(tag);
+        } else if (isIntArray(tag)) {
+            return getAsIntArray(tag);
+        } else if (isLongArray(tag)) {
+            return getAsLongArray(tag);
         } else if (isInt(tag)) {
             return getAsInt(tag);
         } else if (isLong(tag)) {
@@ -73,6 +79,9 @@ public abstract class NbtConverter<T> {
     // Abstract methods to be implemented by platform-specific converters
     protected abstract boolean isCompound(T tag);
     protected abstract boolean isList(T tag);
+    protected abstract boolean isByteArray(T tag);
+    protected abstract boolean isIntArray(T tag);
+    protected abstract boolean isLongArray(T tag);
     protected abstract boolean isInt(T tag);
     protected abstract boolean isLong(T tag);
     protected abstract boolean isFloat(T tag);
@@ -90,6 +99,9 @@ public abstract class NbtConverter<T> {
     protected abstract double getAsDouble(T tag);
     protected abstract byte getAsByte(T tag);
     protected abstract short getAsShort(T tag);
+    protected abstract byte[] getAsByteArray(T tag);
+    protected abstract int[] getAsIntArray(T tag);
+    protected abstract long[] getAsLongArray(T tag);
     protected abstract String getAsString(T tag);
 
 }

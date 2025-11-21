@@ -34,11 +34,19 @@ public class JsonDataBuilder implements DataStructureBuilder {
         JsonArray jsonArray = (JsonArray) array;
         if (value instanceof JsonObject) {
             jsonArray.add((JsonObject) value);
+        } else if (value instanceof JsonArray) {
+            jsonArray.add((JsonArray) value);
         }
     }
 
     @Override
-    public void addStringProperty(Object parent, String key, String value) {
+    public void addByteProperty(Object parent, String key, byte value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        jsonParent.addProperty(key, value);
+    }
+
+    @Override
+    public void addShortProperty(Object parent, String key, short value) {
         JsonObject jsonParent = (JsonObject) parent;
         jsonParent.addProperty(key, value);
     }
@@ -48,6 +56,60 @@ public class JsonDataBuilder implements DataStructureBuilder {
         JsonObject jsonParent = (JsonObject) parent;
         jsonParent.addProperty(key, value);
     }
+
+    @Override
+    public void addLongProperty(Object parent, String key, long value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        jsonParent.addProperty(key, value);
+    }
+
+    @Override
+    public void addFloatProperty(Object parent, String key, float value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        jsonParent.addProperty(key, value);
+    }
+
+    @Override
+    public void addDoubleProperty(Object parent, String key, double value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        jsonParent.addProperty(key, value);
+    }
+
+    @Override
+    public void addStringProperty(Object parent, String key, String value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        jsonParent.addProperty(key, value);
+    }
+
+    @Override
+    public void addByteArrayProperty(Object parent, String key, byte[] value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        JsonArray array = new JsonArray();
+        for (byte b : value) {
+            array.add(b);
+        }
+        jsonParent.add(key, array);
+    }
+
+    @Override
+    public void addIntArrayProperty(Object parent, String key, int[] value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        JsonArray array = new JsonArray();
+        for (int i : value) {
+            array.add(i);
+        }
+        jsonParent.add(key, array);
+    }
+
+    @Override
+    public void addLongArrayProperty(Object parent, String key, long[] value) {
+        JsonObject jsonParent = (JsonObject) parent;
+        JsonArray array = new JsonArray();
+        for (long l : value) {
+            array.add(l);
+        }
+        jsonParent.add(key, array);
+    }
  
     @Override
     public void addBooleanProperty(Object parent, String key, boolean value) {
@@ -56,9 +118,75 @@ public class JsonDataBuilder implements DataStructureBuilder {
     }
 
     @Override
+    public void addByteToArray(Object array, byte value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
+    public void addShortToArray(Object array, short value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
+    public void addIntToArray(Object array, int value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
+    public void addLongToArray(Object array, long value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
+    public void addFloatToArray(Object array, float value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
+    public void addDoubleToArray(Object array, double value) {
+        JsonArray jsonArray = (JsonArray) array;
+        jsonArray.add(value);
+    }
+
+    @Override
     public void addStringToArray(Object array, String value) {
         JsonArray jsonArray = (JsonArray) array;
         jsonArray.add(value);
+    }
+
+    @Override
+    public void addByteArrayToArray(Object array, byte[] value) {
+        JsonArray jsonArray = (JsonArray) array;
+        JsonArray byteArray = new JsonArray();
+        for (byte b : value) {
+            byteArray.add(b);
+        }
+        jsonArray.add(byteArray);
+    }
+
+    @Override
+    public void addIntArrayToArray(Object array, int[] value) {
+        JsonArray jsonArray = (JsonArray) array;
+        JsonArray intArray = new JsonArray();
+        for (int i : value) {
+            intArray.add(i);
+        }
+        jsonArray.add(intArray);
+    }
+
+    @Override
+    public void addLongArrayToArray(Object array, long[] value) {
+        JsonArray jsonArray = (JsonArray) array;
+        JsonArray longArray = new JsonArray();
+        for (long l : value) {
+            longArray.add(l);
+        }
+        jsonArray.add(longArray);
     }
 
 }
