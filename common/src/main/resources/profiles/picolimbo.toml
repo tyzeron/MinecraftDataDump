@@ -20,6 +20,10 @@ format = "json"
 file = "registry_codec"
 format = "nbt"
 
+[multi_output.tags]
+file = "registry_tags"
+format = "json"
+
 # Data options
 [blocks]
 properties = false
@@ -27,3 +31,6 @@ states = true
 
 [registries]
 codec = true
+
+[tags]
+# Tags configuration (no specific options yet)

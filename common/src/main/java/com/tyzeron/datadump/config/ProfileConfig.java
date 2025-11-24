@@ -11,6 +11,7 @@ public class ProfileConfig {
     private ExportConfig export;
     private BlocksConfig blocks;
     private RegistriesConfig registries;
+    private TagsConfig tags;
     private Map<String, MultiOutputConfig> multi_output;
 
     public ExportConfig getExport() {
@@ -35,6 +36,14 @@ public class ProfileConfig {
 
     public void setRegistries(RegistriesConfig registries) {
         this.registries = registries;
+    }
+
+    public TagsConfig getTags() {
+        return tags;
+    }
+
+    public void setTags(TagsConfig tags) {
+        this.tags = tags;
     }
 
     public Map<String, MultiOutputConfig> getMultiOutput() {
@@ -152,6 +161,16 @@ public class ProfileConfig {
 
         public void setCodec(boolean codec) {
             this.codec = codec;
+        }
+    }
+
+    public static class TagsConfig {
+
+        // Tags don't have specific configuration options yet,
+        // but having this class allows for future expansion
+
+        public TagsConfig() {
+            // Default constructor
         }
     }
 
