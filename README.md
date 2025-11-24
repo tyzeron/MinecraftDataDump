@@ -7,6 +7,8 @@ So far the data the mod can dump are the following:
   - _Supported Output File Types:_ JSON, NBT
 - Registries (including registry's elements codec)
   - _Supported Output File Types:_ JSON, NBT
+- Tags (registry tags that group game elements together)
+  - _Supported Output File Types:_ JSON, NBT
 
 ## Usage
 

@@ -19,6 +19,7 @@ public class ForgeDataDump {
         // Initialize platform-specific components
         PlatformHelper.setBlockDataProvider(new ForgeBlockDataProvider());
         PlatformHelper.setRegistryDataProvider(new ForgeRegistryDataProvider());
+        PlatformHelper.setTagDataProvider(new ForgeTagDataProvider());
         PlatformHelper.setNbtWriter(new ForgeNbtWriter());
         PlatformHelper.setGameDirectory(FMLPaths.GAMEDIR.get());
         PlatformHelper.setConfigDirectory(FMLPaths.CONFIGDIR.get());
@@ -51,6 +52,8 @@ public class ForgeDataDump {
                             String profileName = StringArgumentType.getString(context, "profile");
                             var registryProvider = (ForgeRegistryDataProvider) PlatformHelper.getRegistryDataProvider();
                             registryProvider.setServer(context.getSource().getServer());
+                            var tagProvider = (ForgeTagDataProvider) PlatformHelper.getTagDataProvider();
+                            tagProvider.setServer(context.getSource().getServer());
                             var result = CommandHandler.handleRun(profileName);
                             if (result.isSuccess()) {
                                 context.getSource().sendSuccess(() -> 

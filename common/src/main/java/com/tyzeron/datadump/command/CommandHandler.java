@@ -8,13 +8,15 @@ import com.tyzeron.datadump.BlockDataDump;
 import com.tyzeron.datadump.DataDump;
 import com.tyzeron.datadump.PlatformHelper;
 import com.tyzeron.datadump.RegistryDataDump;
+import com.tyzeron.datadump.TagDataDump;
 import com.tyzeron.datadump.abstraction.block.BlockDataProvider;
 import com.tyzeron.datadump.abstraction.block.BlockInfo;
 import com.tyzeron.datadump.abstraction.nbt.NbtCompound;
 import com.tyzeron.datadump.abstraction.nbt.NbtWriter;
 import com.tyzeron.datadump.abstraction.registry.RegistryDataProvider;
 import com.tyzeron.datadump.abstraction.registry.RegistryInfo;
-import com.tyzeron.datadump.builder.DataStructureBuilder;
+import com.tyzeron.datadump.abstraction.tag.TagDataProvider;
+import com.tyzeron.datadump.abstraction.tag.TagInfo;
 import com.tyzeron.datadump.builder.JsonDataBuilder;
 import com.tyzeron.datadump.builder.NbtDataBuilder;
 import com.tyzeron.datadump.config.ConfigManager;
@@ -158,6 +160,10 @@ public class CommandHandler {
                             tempProfile.setRegistries(profile.getRegistries());
                             RegistryDataDump.generateDump(outputFile, tempProfile);
                             successCount++;
+                        } else if ("tags".equals(category)) {
+                            tempProfile.setTags(profile.getTags());
+                            TagDataDump.generateDump(outputFile, tempProfile);
+                            successCount++;
                         } else {
                             DataDump.LOGGER.warn("Unknown category '{}', skipping", category);
                         }
@@ -235,6 +241,16 @@ public class CommandHandler {
             builder.addToObject(root, "registries", registriesData);
         }
 
+        // Add tags data if enabled
+        if (profile.getTags() != null) {
+            TagDataProvider tagProvider = PlatformHelper.getTagDataProvider();
+            Collection<TagInfo> tags = tagProvider.getAllTags();
+
+            DataDump.LOGGER.info("Building tags data for combined dump...");
+            Object tagsData = TagDataDump.buildTagData(tags, profile, builder);
+            builder.addToObject(root, "tags", tagsData);
+        }
+
         // Choose GSON instance based on format
         boolean pretty = profile.getExport().getJson() != null && profile.getExport().getJson().isPretty();
         Gson gson = pretty ? new GsonBuilder().setPrettyPrinting().create() : new Gson();
@@ -271,6 +287,16 @@ public class CommandHandler {
             DataDump.LOGGER.info("Building registries data for combined dump...");
             Object registriesData = RegistryDataDump.buildRegistryData(registries, profile, builder);
             builder.addToObject(root, "registries", registriesData);
+        }
+
+        // Add tags data if enabled
+        if (profile.getTags() != null) {
+            TagDataProvider tagProvider = PlatformHelper.getTagDataProvider();
+            Collection<TagInfo> tags = tagProvider.getAllTags();
+
+            DataDump.LOGGER.info("Building tags data for combined dump...");
+            Object tagsData = TagDataDump.buildTagData(tags, profile, builder);
+            builder.addToObject(root, "tags", tagsData);
         }
 
         // Write NBT to file

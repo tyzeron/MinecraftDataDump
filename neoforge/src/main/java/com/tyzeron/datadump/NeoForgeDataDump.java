@@ -20,6 +20,7 @@ public class NeoForgeDataDump {
         // Initialize platform-specific components
         PlatformHelper.setBlockDataProvider(new NeoForgeBlockDataProvider());
         PlatformHelper.setRegistryDataProvider(new NeoForgeRegistryDataProvider());
+        PlatformHelper.setTagDataProvider(new NeoForgeTagDataProvider());
         PlatformHelper.setNbtWriter(new NeoForgeNbtWriter());
         PlatformHelper.setGameDirectory(FMLPaths.GAMEDIR.get());
         PlatformHelper.setConfigDirectory(FMLPaths.CONFIGDIR.get());
@@ -52,6 +53,8 @@ public class NeoForgeDataDump {
                             String profileName = StringArgumentType.getString(context, "profile");
                             var registryProvider = (NeoForgeRegistryDataProvider) PlatformHelper.getRegistryDataProvider();
                             registryProvider.setServer(context.getSource().getServer());
+                            var tagProvider = (NeoForgeTagDataProvider) PlatformHelper.getTagDataProvider();
+                            tagProvider.setServer(context.getSource().getServer());
                             var result = CommandHandler.handleRun(profileName);
                             if (result.isSuccess()) {
                                 context.getSource().sendSuccess(() -> 
